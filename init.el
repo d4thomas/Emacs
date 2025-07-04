@@ -25,8 +25,7 @@
     "editing.el"
     "elisp.el"
     "clojure.el"
-    "lsp.el"
-    "shell.el"))
+    "lsp.el"))
 
 (dolist (file addons)
   (load
