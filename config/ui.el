@@ -40,3 +40,48 @@
       save-interprogram-paste-before-kill t
       apropos-do-all t
       mouse-yank-at-point t)
+
+;; Window split with C-x | 
+(defun toggle-window-split ()
+  "Toggle between vertical and horizontal split for two windows."
+  (interactive)
+  (when (= (count-windows) 2)
+    (let* ((this-win-buffer (window-buffer))
+           (next-win-buffer (window-buffer (next-window)))
+           (this-win-edges (window-edges (selected-window)))
+           (next-win-edges (window-edges (next-window)))
+           (split-vertically
+            (= (car this-win-edges)
+               (car next-win-edges)))
+           (splitter
+            (if split-vertically
+                #'split-window-horizontally
+              #'split-window-vertically)))
+      (delete-other-windows)
+      (let ((first-win (selected-window)))
+        (funcall splitter)
+        (if split-vertically
+            (set-window-buffer (next-window) next-win-buffer)
+          (set-window-buffer (next-window) this-win-buffer))
+        (select-window first-win)))))
+(global-set-key (kbd "C-x |") #'toggle-window-split)
+
+;; Clean menubar
+(let ((tool-items '(news
+                    encrypt
+                    quick-calc
+                    directory
+                    browse-net
+                    mail
+                    rmail
+                    compose-mail
+                    directory-search
+                    browse-web
+                    calendar
+                    calc
+                    simple-calculator
+                    encryption-decryption
+                    games
+                    gnus)))
+  (dolist (item tool-items)
+    (define-key global-map (vector 'menu-bar 'tools item) nil)))
